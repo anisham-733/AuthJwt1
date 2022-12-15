@@ -34,6 +34,8 @@ namespace AuthJwt1.Controllers
             var item=mydatabaseContext.TodoItems.FirstOrDefault();
             var token =  tokenHandler.CreateTokenAsync(item);
             Console.WriteLine(token.Result);
+
+
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
