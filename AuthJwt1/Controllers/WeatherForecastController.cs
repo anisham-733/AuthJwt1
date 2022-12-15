@@ -7,7 +7,7 @@ namespace AuthJwt1.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
+    //[Authorize]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -17,16 +17,23 @@ namespace AuthJwt1.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly ITokenHandler tokenHandler;
+        private readonly MydatabaseContext mydatabaseContext;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger,ITokenHandler tokenHandler)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger,ITokenHandler tokenHandler,MydatabaseContext mydatabaseContext)
         {
             _logger = logger;
             this.tokenHandler = tokenHandler;
+            this.mydatabaseContext = mydatabaseContext;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+            
+            //var user = <if user exists>
+            var item=mydatabaseContext.TodoItems.FirstOrDefault();
+            var token =  tokenHandler.CreateTokenAsync(item);
+            Console.WriteLine(token.Result);
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
@@ -34,9 +41,7 @@ namespace AuthJwt1.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
-            //var user = <if user exists>
-            //var token = tokenHandler.CreateTokenAsync(user);
-            //return Ok(token);
+            
         }
     }
 }
